@@ -32,6 +32,7 @@
         </constraints>
         <properties>
           <background color="-16329056"/>
+          <enabled value="false"/>
           <font name="Roboto" size="16" style="0"/>
           <foreground color="-16777216"/>
           <label value="Guardar"/>
@@ -46,6 +47,7 @@
         <properties>
           <actionCommand value="Read"/>
           <background color="-11930"/>
+          <enabled value="false"/>
           <font name="Roboto" size="16" style="0"/>
           <foreground color="-16777216"/>
           <label value="Escribir"/>
@@ -66,6 +68,7 @@
             <constraints/>
             <properties>
               <background color="-2234906"/>
+              <enabled value="false"/>
               <font name="Roboto" size="16" style="0"/>
               <foreground color="-16777216"/>
               <lineWrap value="true"/>

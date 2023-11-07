@@ -10,6 +10,7 @@ public class ReaderWriterWindow {
     private JTextArea textArea;
 
     ArrayList<String> fileContent = new ArrayList<>();
+    Boolean isWriting = false;
 
 
     public ReaderWriterWindow() {
@@ -33,12 +34,45 @@ public class ReaderWriterWindow {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+
+            readButton.setEnabled(false);
+            writeButton.setEnabled(true);
         });
 
         writeButton.addActionListener(e -> {
+            isWriting = !isWriting;
+
+            if(isWriting) {
+                writeButton.setText("Cancelar escritura");
+                writeButton.setBackground(new java.awt.Color(255,19,67));
+
+                // writing semaphore process
+
+                textArea.setEnabled(true);
+                saveButton.setEnabled(true);
+            } else {
+                writeButton.setText("Escribir");
+                writeButton.setBackground(new java.awt.Color(255,209,102));
+
+                // writing semaphore process
+
+                textArea.setEnabled(false);
+                saveButton.setEnabled(false);
+            }
         });
 
         saveButton.addActionListener(e -> {
+            // save changes to file
+
+            textArea.setEnabled(false);
+            saveButton.setEnabled(false);
+            writeButton.setEnabled(true);
+
+            if(isWriting) {
+                writeButton.setText("Escribir");
+                writeButton.setBackground(new java.awt.Color(255,209,102));
+                isWriting = !isWriting;
+            }
         });
     }
 
