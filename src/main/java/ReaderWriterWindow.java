@@ -27,6 +27,8 @@ public class ReaderWriterWindow {
                     line = reader.readLine();
                 }
 
+                reader.close();
+
                 for(String s : fileContent) {
                     textArea.append(s);
                 }
@@ -62,7 +64,14 @@ public class ReaderWriterWindow {
         });
 
         saveButton.addActionListener(e -> {
-            // save changes to file
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("ReaderWriterFiles/content.txt"));
+                writer.write(textArea.getText());
+
+                writer.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
 
             textArea.setEnabled(false);
             saveButton.setEnabled(false);
