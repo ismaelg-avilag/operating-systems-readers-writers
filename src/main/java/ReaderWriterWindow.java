@@ -9,33 +9,12 @@ public class ReaderWriterWindow {
     private JButton writeButton;
     private JTextArea textArea;
 
-    ArrayList<String> fileContent = new ArrayList<>();
     Boolean isWriting = false;
 
 
     public ReaderWriterWindow() {
         readButton.addActionListener(e -> {
-            textArea.setText("");
-            fileContent.clear();
-
-            try {
-                BufferedReader reader = new BufferedReader(new FileReader("ReaderWriterFiles/content.txt"));
-
-                String line = reader.readLine();
-                while (line != null) {
-                    fileContent.add(line + "\n");
-                    line = reader.readLine();
-                }
-
-                reader.close();
-
-                for(String s : fileContent) {
-                    textArea.append(s);
-                }
-
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            updateTextArea();
 
             readButton.setEnabled(false);
             writeButton.setEnabled(true);
@@ -48,7 +27,7 @@ public class ReaderWriterWindow {
                 writeButton.setText("Cancelar escritura");
                 writeButton.setBackground(new java.awt.Color(255,19,67));
 
-                // writing semaphore process
+                // block write access
 
                 textArea.setEnabled(true);
                 saveButton.setEnabled(true);
@@ -56,7 +35,7 @@ public class ReaderWriterWindow {
                 writeButton.setText("Escribir");
                 writeButton.setBackground(new java.awt.Color(255,209,102));
 
-                // writing semaphore process
+                // unlock write access
 
                 textArea.setEnabled(false);
                 saveButton.setEnabled(false);
@@ -83,6 +62,25 @@ public class ReaderWriterWindow {
                 isWriting = !isWriting;
             }
         });
+    }
+
+    private void updateTextArea()
+    {
+        textArea.setText("");
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("ReaderWriterFiles/content.txt"));
+
+            String line = reader.readLine();
+            while (line != null) {
+                textArea.append(line + "\n");
+                line = reader.readLine();
+            }
+
+            reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
 

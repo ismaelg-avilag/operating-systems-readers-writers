@@ -68,9 +68,11 @@
             <constraints/>
             <properties>
               <background color="-2234906"/>
+              <disabledTextColor color="-13092808"/>
               <enabled value="false"/>
               <font name="Roboto" size="16" style="0"/>
               <foreground color="-16777216"/>
+              <inheritsPopupMenu value="true"/>
               <lineWrap value="true"/>
               <margin top="10" left="10" bottom="10" right="10"/>
             </properties>
