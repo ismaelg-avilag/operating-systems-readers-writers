@@ -8,6 +8,7 @@ public class MainWindow {
     private JSpinner spinner;
 
     private ArrayList<ReaderWriterWindow> windowsList = new ArrayList<>();
+    private Semaphore readingSemaphore;
     private Semaphore writingSemaphore;
 
     public MainWindow()
@@ -24,11 +25,12 @@ public class MainWindow {
 
     private void createMultipleWindows(int windows)
     {
+        readingSemaphore = new Semaphore(windows);
         writingSemaphore = new Semaphore(1);
 
         for(int i = 0; i < windows; i++) {
             JFrame frame = new JFrame("Lector - Escritor " + (i + 1));
-            ReaderWriterWindow window = new ReaderWriterWindow(writingSemaphore, windowsList);
+            ReaderWriterWindow window = new ReaderWriterWindow(readingSemaphore, writingSemaphore, windowsList);
 
             frame.setContentPane(window.mainPanel);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

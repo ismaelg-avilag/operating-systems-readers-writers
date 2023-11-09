@@ -11,23 +11,41 @@ public class ReaderWriterWindow {
     private JTextArea textArea;
 
     Boolean isWriting = false;
+    Boolean isReading = false;
 
     private ArrayList<ReaderWriterWindow> windowsList = new ArrayList<>();
+    private Semaphore readingSemaphore;
     private Semaphore writingSemaphore;
 
 
     public ReaderWriterWindow() {}
 
-    public ReaderWriterWindow(Semaphore writingSemaphore, ArrayList<ReaderWriterWindow> windowsList) {
+    public ReaderWriterWindow(Semaphore readingSemaphore, Semaphore writingSemaphore, ArrayList<ReaderWriterWindow> windowsList) {
+        this.readingSemaphore = readingSemaphore;
         this.writingSemaphore = writingSemaphore;
         this.windowsList = windowsList;
 
 
         readButton.addActionListener(e -> {
-            updateTextArea(readFileContent());
+            isReading = !isReading;
 
-            readButton.setEnabled(false);
-            writeButton.setEnabled(true);
+            if(isReading) {
+                enableRead();
+
+                readButton.setText("Cancelar Lectura");
+                readButton.setBackground(new java.awt.Color(255,19,67));
+
+                writeButton.setEnabled(true);
+            } else {
+                disableRead();
+
+                readButton.setText("Habilitar Lectura");
+                readButton.setBackground(new java.awt.Color(17,138,178));
+
+                readButton.setEnabled(true);
+                writeButton.setEnabled(false);
+            }
+
         });
 
         writeButton.addActionListener(e -> {
@@ -39,6 +57,7 @@ public class ReaderWriterWindow {
 
                 textArea.setEnabled(true);
                 saveButton.setEnabled(true);
+                readButton.setEnabled(false);
 
                 enableWrite();
             } else {
@@ -47,6 +66,7 @@ public class ReaderWriterWindow {
 
                 textArea.setEnabled(false);
                 saveButton.setEnabled(false);
+                readButton.setEnabled(true);
 
                 disableWrite();
             }
@@ -105,6 +125,22 @@ public class ReaderWriterWindow {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void enableRead()
+    {
+        try {
+            readingSemaphore.acquire();
+            updateTextArea(readFileContent());
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void disableRead()
+    {
+        readingSemaphore.release();
+        textArea.setText("");
     }
 
     private void enableWrite()
