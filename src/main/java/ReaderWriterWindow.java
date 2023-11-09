@@ -17,13 +17,16 @@ public class ReaderWriterWindow {
     private Semaphore readingSemaphore;
     private Semaphore writingSemaphore;
 
+    private File selectedFile;
+
 
     public ReaderWriterWindow() {}
 
-    public ReaderWriterWindow(Semaphore readingSemaphore, Semaphore writingSemaphore, ArrayList<ReaderWriterWindow> windowsList) {
+    public ReaderWriterWindow(Semaphore readingSemaphore, Semaphore writingSemaphore, ArrayList<ReaderWriterWindow> windowsList, File selectedFile) {
         this.readingSemaphore = readingSemaphore;
         this.writingSemaphore = writingSemaphore;
         this.windowsList = windowsList;
+        this.selectedFile = selectedFile;
 
 
         readButton.addActionListener(e -> {
@@ -100,7 +103,7 @@ public class ReaderWriterWindow {
         StringBuilder fileContent = new StringBuilder();
 
         try {
-            BufferedReader reader = new BufferedReader(new FileReader("ReaderWriterFiles/content.txt"));
+            BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
             String line = reader.readLine();
 
             while (line != null) {
@@ -118,7 +121,7 @@ public class ReaderWriterWindow {
     private void saveFileContent()
     {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("ReaderWriterFiles/content.txt"));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(selectedFile));
             writer.write(textArea.getText());
             writer.close();
         } catch (IOException ex) {
