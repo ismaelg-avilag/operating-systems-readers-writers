@@ -62,7 +62,7 @@ public class MainWindow {
             ReaderWriterWindow window = new ReaderWriterWindow(readingSemaphore, writingSemaphore, windowsList, selectedFile);
 
             frame.setContentPane(window.mainPanel);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.pack();
             frame.setVisible(true);
 
