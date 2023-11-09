@@ -7,10 +7,20 @@ public class MainWindow {
 
     public MainWindow()
     {
-        spinner.setModel(new SpinnerNumberModel(1, 1, 5, 1));
+        spinner.setModel(new SpinnerNumberModel(2, 2, 5, 1));
 
         generateWindowsButton.addActionListener(e -> {
-            // get the number of windows to generate
+            int windows = (int) spinner.getValue();
+            for(int i = 0; i < windows; i++) {
+                JFrame frame = new JFrame("ReaderWriterWindow");
+                frame.setContentPane(new ReaderWriterWindow().mainPanel);
+                frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                frame.pack();
+                frame.setVisible(true);
+            }
+
+            spinner.setEnabled(false);
+            generateWindowsButton.setEnabled(false);
         });
     }
 

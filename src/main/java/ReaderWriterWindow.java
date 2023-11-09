@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class ReaderWriterWindow {
-    private JPanel mainPanel;
+    public JPanel mainPanel;
     private JButton readButton;
     private JButton saveButton;
     private JButton writeButton;
