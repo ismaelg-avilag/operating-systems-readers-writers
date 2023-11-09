@@ -79,6 +79,7 @@ public class ReaderWriterWindow {
             textArea.setEnabled(false);
             saveButton.setEnabled(false);
             writeButton.setEnabled(true);
+            readButton.setEnabled(true);
 
             if(isWriting) {
                 writeButton.setText("Habilitar Escritura");
@@ -178,7 +179,6 @@ public class ReaderWriterWindow {
         readButton.setEnabled(false);
         writeButton.setEnabled(false);
         saveButton.setEnabled(false);
-        textArea.setText("Otra ventana está escribiendo en este momento.");
     }
 
     private void enableWindow()
@@ -186,7 +186,9 @@ public class ReaderWriterWindow {
         readButton.setEnabled(true);
         writeButton.setEnabled(true);
         saveButton.setEnabled(false);
-        updateTextArea(readFileContent());
+
+        if(isReading)
+            updateTextArea(readFileContent());
     }
 
 
