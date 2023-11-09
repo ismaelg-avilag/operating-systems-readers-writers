@@ -89,24 +89,22 @@ public class ReaderWriterWindow {
         });
     }
 
-    private void updateTextArea(ArrayList<String> fileContent)
+    private void updateTextArea(String fileContent)
     {
         textArea.setText("");
-
-        for(String line : fileContent)
-            textArea.append(line + "\n");
+        textArea.append(fileContent);
     }
 
-    private ArrayList<String> readFileContent()
+    private String readFileContent()
     {
-        ArrayList<String> fileContent = new ArrayList<>();
+        StringBuilder fileContent = new StringBuilder();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader("ReaderWriterFiles/content.txt"));
             String line = reader.readLine();
 
             while (line != null) {
-                fileContent.add(line);
+                fileContent.append(line).append("\n");
                 line = reader.readLine();
             }
             reader.close();
@@ -114,7 +112,7 @@ public class ReaderWriterWindow {
             ex.printStackTrace();
         }
 
-        return fileContent;
+        return fileContent.toString();
     }
 
     private void saveFileContent()
