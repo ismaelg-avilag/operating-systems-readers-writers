@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class ReaderWriterWindow {
     public JPanel mainPanel;
@@ -11,10 +12,19 @@ public class ReaderWriterWindow {
 
     Boolean isWriting = false;
 
+    private ArrayList<ReaderWriterWindow> windowsList = new ArrayList<>();
+    private Semaphore writingSemaphore;
 
-    public ReaderWriterWindow() {
+
+    public ReaderWriterWindow() {}
+
+    public ReaderWriterWindow(Semaphore writingSemaphore, ArrayList<ReaderWriterWindow> windowsList) {
+        this.writingSemaphore = writingSemaphore;
+        this.windowsList = windowsList;
+
+
         readButton.addActionListener(e -> {
-            updateTextArea();
+            updateTextArea(readFileContent());
 
             readButton.setEnabled(false);
             writeButton.setEnabled(true);
@@ -24,72 +34,124 @@ public class ReaderWriterWindow {
             isWriting = !isWriting;
 
             if(isWriting) {
-                writeButton.setText("Cancelar escritura");
+                writeButton.setText("Cancelar Escritura");
                 writeButton.setBackground(new java.awt.Color(255,19,67));
-
-                // block write access
 
                 textArea.setEnabled(true);
                 saveButton.setEnabled(true);
-            } else {
-                writeButton.setText("Escribir");
-                writeButton.setBackground(new java.awt.Color(255,209,102));
 
-                // unlock write access
+                enableWrite();
+            } else {
+                writeButton.setText("Habilitar Escritura");
+                writeButton.setBackground(new java.awt.Color(255,209,102));
 
                 textArea.setEnabled(false);
                 saveButton.setEnabled(false);
+
+                disableWrite();
             }
         });
 
         saveButton.addActionListener(e -> {
-            try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter("ReaderWriterFiles/content.txt"));
-                writer.write(textArea.getText());
-
-                writer.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            saveFileContent();
+            disableWrite();
 
             textArea.setEnabled(false);
             saveButton.setEnabled(false);
             writeButton.setEnabled(true);
 
             if(isWriting) {
-                writeButton.setText("Escribir");
+                writeButton.setText("Habilitar Escritura");
                 writeButton.setBackground(new java.awt.Color(255,209,102));
                 isWriting = !isWriting;
             }
         });
     }
 
-    private void updateTextArea()
+    private void updateTextArea(ArrayList<String> fileContent)
     {
         textArea.setText("");
 
+        for(String line : fileContent)
+            textArea.append(line + "\n");
+    }
+
+    private ArrayList<String> readFileContent()
+    {
+        ArrayList<String> fileContent = new ArrayList<>();
+
         try {
             BufferedReader reader = new BufferedReader(new FileReader("ReaderWriterFiles/content.txt"));
-
             String line = reader.readLine();
+
             while (line != null) {
-                textArea.append(line + "\n");
+                fileContent.add(line);
                 line = reader.readLine();
             }
-
             reader.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return fileContent;
+    }
+
+    private void saveFileContent()
+    {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("ReaderWriterFiles/content.txt"));
+            writer.write(textArea.getText());
+            writer.close();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
 
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("ReaderWriterWindow");
-        frame.setContentPane(new ReaderWriterWindow().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+    private void enableWrite()
+    {
+        try {
+            writingSemaphore.acquire();
+            disableOtherWindows();
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
+
+    private void disableWrite()
+    {
+        writingSemaphore.release();
+        enableOtherWindows();
+    }
+
+    private void disableOtherWindows()
+    {
+        for(ReaderWriterWindow window : windowsList)
+            if(window != this)
+                window.disableWindow();
+    }
+
+    private void enableOtherWindows()
+    {
+        for(ReaderWriterWindow window : windowsList)
+            if(window != this)
+                window.enableWindow();
+    }
+
+    private void disableWindow()
+    {
+        readButton.setEnabled(false);
+        writeButton.setEnabled(false);
+        saveButton.setEnabled(false);
+        textArea.setText("Otra ventana está escribiendo en este momento.");
+    }
+
+    private void enableWindow()
+    {
+        readButton.setEnabled(true);
+        writeButton.setEnabled(true);
+        saveButton.setEnabled(false);
+        updateTextArea(readFileContent());
+    }
+
 
 }

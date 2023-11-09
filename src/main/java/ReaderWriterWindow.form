@@ -50,9 +50,9 @@
           <enabled value="false"/>
           <font name="Roboto" size="16" style="0"/>
           <foreground color="-16777216"/>
-          <label value="Escribir"/>
+          <label value="Habilitar Escritura"/>
           <margin top="10" left="10" bottom="10" right="10"/>
-          <text value="Escribir"/>
+          <text value="Habilitar Escritura"/>
         </properties>
       </component>
       <scrollpane id="19fe5">
